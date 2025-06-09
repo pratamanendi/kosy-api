@@ -13,6 +13,9 @@ export const authMiddleware = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'Unauthorized - Token Expired' });
+        }
         return res.status(401).json({ error: 'Unauthorized' });
     }
 };

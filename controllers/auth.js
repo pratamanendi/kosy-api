@@ -70,8 +70,8 @@ export const register = async (req, res) => {
             }
         });
 
-        const accessToken = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        const refreshToken = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+        const accessToken = jwt.sign({ sub: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const refreshToken = jwt.sign({ sub: user.id, email: user.email, role: user.role }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
@@ -95,8 +95,6 @@ export const logout = (req, res) => {
 export const refreshToken = async (req, res) => {
 
     const { refreshToken: token } = req.cookies;
-    console.log("🚀 ~ refreshToken ~ token:", token)
-    console.log("🚀 ~ refreshToken ~ req.cookies:", req.cookies)
 
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -110,7 +108,7 @@ export const refreshToken = async (req, res) => {
             return res.status(401).json({ error: 'Invalid refresh token' });
         }
 
-        const newAccessToken = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const newAccessToken = jwt.sign({ sub: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.json({ accessToken: newAccessToken });
     } catch (err) {
@@ -168,7 +166,7 @@ export const forgotPassword = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const token = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ sub: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         const transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
@@ -179,11 +177,14 @@ export const forgotPassword = async (req, res) => {
             },
         });
 
+        const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${token}`
+
         const mailOptions = {
             from: process.env.MAIL_FROM,
             to: email,
             subject: 'Reset Password',
-            text: `Please click this link to reset your password: ${process.env.CLIENT_URL}/reset-password?token=${token}`,
+            text: `Please click this link to reset your password: ${resetLink}`,
+            html: emailTemplate(resetLink, user.name),
         };
 
         await transporter.sendMail(mailOptions);
@@ -229,5 +230,32 @@ export const resetPassword = async (req, res) => {
         logger(`${moment().format('YYYY-MM-DD HH:mm:ss')}: URL: ${req.url} Method: ${req.method} Query: ${JSON.stringify(req.query)} Body: ${JSON.stringify(req.body)} Error: ${err.message}\n`);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+};
+
+const emailTemplate = (resetLink, name) => {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        body { font-family: Arial; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; }
+        .btn { display: inline-block; padding: 10px 20px; background-color: #4f46e5; color: #fff; text-decoration: none; border-radius: 4px; margin-top: 20px; }
+        .footer { font-size: 12px; color: #aaa; margin-top: 30px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h2>Reset Your Password</h2>
+        <p>Hello ${name},</p>
+        <p>You requested a password reset. Click below to choose a new password:</p>
+        <a href="${resetLink}" class="btn">Reset Password</a>
+        <p>If you didn’t request this, ignore this email.</p>
+        <p class="footer">This link will expire in 1 hour.</p>
+      </div>
+    </body>
+    </html>
+    `;
 };
 
