@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { checkField } from './checkField.js';
-import errorHandler from './errorHandler.js';
+import { checkField, errorHandler } from '../composables/index.js';
 
 const prisma = new PrismaClient();
 
@@ -117,7 +116,10 @@ export const create = async (req, res) => {
 // Update product
 export const update = async (req, res) => {
     const { name, description, thumbnail, ...meta } = req.body;
-    const { sub: user_id } = req.user;
+    const { sub: user_id, role } = req.user;
+
+    if (!role || role < 2) return res.status(401).json({ error: 'Unauthorized [role]' })
+
 
     const required = ['name', 'description', 'thumbnail', 'price', 'stock'];
     const missing = checkField(req.body, required)
@@ -127,7 +129,6 @@ export const update = async (req, res) => {
     }
 
     try {
-
         const updateMany = Object.entries(meta).map(([meta_key, meta_value]) => {
             return prisma.productMeta.update({
                 where: {
@@ -165,7 +166,10 @@ export const update = async (req, res) => {
 
 // Delete product
 export const deleteProduct = async (req, res) => {
-    const { sub: user_id } = req.user
+    const { sub: user_id, role } = req.user
+
+    if (!role || role < 2) return res.status(401).json({ error: 'Unauthorized [role]' })
+
     try {
         await prisma.products.update({
             where: { id: req.params.id },

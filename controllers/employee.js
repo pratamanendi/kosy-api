@@ -1,7 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import logger from '../logger.js';
-import moment from 'moment';
-import errorHandler from './errorHandler.js';
+import { errorHandler } from '../composables/index.js';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +11,7 @@ export const getAll = async (req, res) => {
         });
         res.json(employees);
     } catch (err) {
-        errorHandler(err, req, res, 'Failed to fetch employees');
+        return errorHandler(err, req, res, 'Failed to fetch employees');
     }
 };
 
@@ -30,7 +28,7 @@ export const getById = async (req, res) => {
         if (!employee) return res.status(404).json({ error: 'Not found' });
         res.json(employee);
     } catch (err) {
-        errorHandler(err, req, res, 'Failed to fetch employee');
+        return errorHandler(err, req, res, 'Failed to fetch employee');
     }
 };
 
@@ -43,7 +41,7 @@ export const create = async (req, res) => {
         });
         res.status(201).json(newEmployee);
     } catch (err) {
-        errorHandler(err, req, res, 'Failed to create employee');
+        return errorHandler(err, req, res, 'Failed to create employee');
     }
 };
 
@@ -70,7 +68,7 @@ export const update = async (req, res) => {
         });
         res.json(updated);
     } catch (err) {
-        errorHandler(err, req, res, 'Failed to update employee');
+        return errorHandler(err, req, res, 'Failed to update employee');
     }
 };
 
@@ -83,7 +81,8 @@ export const deleteEmployee = async (req, res) => {
         });
         res.json({ message: 'Employee deleted' });
     } catch (err) {
-        errorHandler(err, req, res, 'Failed to delete employee');
+        return errorHandler(err, req, res, 'Failed to delete employee');
     }
 };
+
 

@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 // Logging middleware
 app.use((req, res, next) => {
-    logger(`${moment().format('YYYY-MM-DD HH:mm:ss')}: URL: ${req.url} Method: ${req.method} Query: ${JSON.stringify(req.query)} Body: ${JSON.stringify(req.body)}\n`);
+    logger(`${moment().format('YYYY-MM-DD HH:mm:ss')}: HIT => URL: ${req.url} Method: ${req.method} Query: ${JSON.stringify(req.query)} Body: ${JSON.stringify(req.body)}\n`);
     next();
 });
 

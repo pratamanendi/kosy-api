@@ -23,8 +23,8 @@ export const login = async (req, res) => {
             return res.status(401).json({ error: 'Invalid Credentials' });
         }
 
-        const accessToken = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        const refreshToken = jwt.sign({ sub: user.id, email: user.email }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+        const accessToken = jwt.sign({ sub: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const refreshToken = jwt.sign({ sub: user.id, email: user.email, role: user.role }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
@@ -33,7 +33,7 @@ export const login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.json({ accessToken, user: { id: user.id, email: user.email, role: user.role, employee: { ...user.employee } } });
+        res.json({ accessToken, user: { id: user.id, email: user.email, employee: { ...user.employee } } });
     } catch (err) {
         logger(`${moment().format('YYYY-MM-DD HH:mm:ss')}: URL: ${req.url} Method: ${req.method} Query: ${JSON.stringify(req.query)} Body: ${JSON.stringify(req.body)} Error: ${err.message}\n`);
         res.status(500).json({ error: 'Internal Server Error' });
