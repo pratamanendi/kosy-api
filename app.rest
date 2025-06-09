@@ -1,0 +1,106 @@
+GET http://localhost:1706/api/employees
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNmFkYjExNy1hNDA5LTQzNjQtOGMyYy1mYTRjM2JiMDUxYWYiLCJlbWFpbCI6InJhemFxaUBnLmNvbSIsImlhdCI6MTc0OTQ1NTU3MiwiZXhwIjoxNzQ5NDU5MTcyfQ.PZ6LKGocfs3j1sYk5OjEcdkDaJvRk1oJD_3NCSMEjdw
+
+###
+GET http://localhost:1706/api/employees/069737f6-b294-4a59-b4d1-42a86cc10dad
+
+
+###
+GET http://localhost:1706/api/activities
+
+###
+GET http://localhost:1706/api/activities/14fe823a-2d61-4430-884d-4af57c6e6dbd
+
+###
+POST http://localhost:1706/api/employees
+Content-Type: application/json
+
+{
+    "name": 123,
+    "npwp": "12.123.123.9-123.123",
+    "alamat":"Jl. bareng yuk"
+}
+###
+POST http://localhost:1706/api/activities
+Content-Type: application/json
+
+{
+    "employee_id": "069737f6-b294-4a59-b4d1-42a86cc10dad",
+    "title": "aktivitas harian 1",
+    "description": "laporan keunganan bulan mei"
+}
+###
+PUT http://localhost:1706/api/employees/ad3822ec-e05f-4f46-9e7c-a4fd11c4abfe
+Content-Type: application/json
+
+{
+    "name": "Wahyu Ambar new updated",
+    "npwp": "12.123.123.9-123.123",
+    "alamat":"Jl. bareng yuk"
+}
+###
+PUT http://localhost:1706/api/activities/14fe823a-2d61-4430-884d-4af57c6e6dbd
+Content-Type: application/json
+
+{
+
+  "employee_id": "069737f6-b294-4a59-b4d1-42a86cc10dad",
+  "title": "aktivitas harian 1 updated",
+  "description": "laporan keunganan bulan mei",
+  "created_at": "2025-06-08T17:54:07.246Z",
+  "updated_at": null,
+  "deleted_at": null
+
+}
+
+###
+DELETE http://localhost:1706/api/employees/83b6567d-8a25-4ca5-98b4-82aeea85d41c
+
+### login
+POST http://localhost:1706/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "razaqi",
+    "password": "1234"
+}
+###
+POST http://localhost:1706/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "joko@g.com",
+    "username": "joko",
+    "password": "a7@joko",
+    "name": "joko"
+}
+
+### logout
+GET http://localhost:1706/api/auth/logout
+Content-Type: application/json
+
+###
+GET http://localhost:1706/api/auth/refresh-token
+Content-Type: application/json
+
+###
+GET http://localhost:1706/api/products/
+###
+GET http://localhost:1706/api/products/5c67300a-729f-4338-8058-611ea2caac18
+###
+DELETE http://localhost:1706/api/products/5c67300a-729f-4338-8058-611ea2caac18
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNmFkYjExNy1hNDA5LTQzNjQtOGMyYy1mYTRjM2JiMDUxYWYiLCJlbWFpbCI6InJhemFxaUBnLmNvbSIsImlhdCI6MTc0OTQ3MDMxOCwiZXhwIjoxNzQ5NDczOTE4fQ.K_CDHQbSve9jnpqiw10y_j-awu9b4Qc8R7KAm2E6-go
+###
+PUT http://localhost:1706/api/products/5c67300a-729f-4338-8058-611ea2caac18
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNmFkYjExNy1hNDA5LTQzNjQtOGMyYy1mYTRjM2JiMDUxYWYiLCJlbWFpbCI6InJhemFxaUBnLmNvbSIsImlhdCI6MTc0OTQ2MzA3MywiZXhwIjoxNzQ5NDY2NjczfQ.zxP0lWIxdzGsz8w_MI5t2_lZFlVV6jkb00I2HyYlfnU
+
+{
+  "name": "Buku mewarnai",
+  "description": "frozen 2",
+  "thumbnail": "/assets/buku-mewarnai.png",
+  "stock" : "15",
+  "price": "100",
+  "sale": "true"
+}
