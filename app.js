@@ -33,11 +33,15 @@ app.use((req, res, next) => {
 });
 
 // Routes
-// app.use('/api/employees', authMiddleware, employeeRoutes);
 app.use('/api/auth/', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/activities', activitesRoutes);
 app.use('/api/products', productRoutes);
+
+// Not Found
+app.use((req, res) => {
+    res.status(404).json({ error: 'Not Found' });
+});
 
 // Global Error Handler
 app.use((err, req, res, next) => {
